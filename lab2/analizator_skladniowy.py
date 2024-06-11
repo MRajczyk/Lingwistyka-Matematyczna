@@ -6,7 +6,7 @@ class InvalidSymbolException(Exception):
 
 first_S = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '(']
 first_W = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '(']
-first_O = ['+', '-', '*', '/', '^']
+first_O = ['+', '-', '*', ':', '^']
 first_C = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
     
 curr_char_index = 0
@@ -46,16 +46,17 @@ def parse_S(input_str):
             if res == False:
                 if input_str[curr_char_index] == ';':
                     curr_char_index += 1
-                    # tu mozna ogarnac poprawe jakichs bledow typu spacja ig
                     if len(input_str) == curr_char_index:
                         return True
                     else:
                         return parse_S(input_str)
+                else:
+                    # tu mozna ogarnac poprawe jakichs bledow typu spacja ig
+                    raise InvalidSymbolException(f"Error at index {curr_char_index}, parser expected one of symbols {first_C}, but encountered: {input_str[curr_char_index]}")
             curr_char_index += 1
             return parse_S(input_str)
         else:
             raise InvalidSymbolException(f"Error at index {curr_char_index}, parser expected one of symbols {first_C}, but encountered: {input_str[curr_char_index]}")
-            return False
     except IndexError:
         raise InvalidSymbolException(f"Error at index {curr_char_index}, unexpected string end")
 
