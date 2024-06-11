@@ -27,6 +27,9 @@ def parse_S(input_str):
                     raise InvalidSymbolException(f"Error at index {curr_char_index}, parser expected one of symbols {first_C}, but encountered: {input_str[curr_char_index]}")
                 while res:
                     curr_char_index += 1
+                    #checking if string ends with a number in production S should be sufficient to claim that the rest was OK
+                    if len(input_str) == curr_char_index:
+                        raise InvalidSymbolException("String was not terminated with symbol ;, but otherwise belonged to grammar.")
                     res = parse_C(input_str)
                 if input_str[curr_char_index] == '.':
                     curr_char_index += 1
@@ -35,6 +38,9 @@ def parse_S(input_str):
                         raise InvalidSymbolException(f"Error at index {curr_char_index}, parser expected one of symbols {first_C}, but encountered: {input_str[curr_char_index]}")
                     while res:
                         curr_char_index += 1
+                        # #same as above error handling but for real numbers
+                        if len(input_str) == curr_char_index:
+                            raise InvalidSymbolException("String was not terminated with symbol ;, but otherwise belonged to grammar.")
                         res = parse_C(input_str)         
             res = parse_O(input_str)
             if res == False:
@@ -48,6 +54,7 @@ def parse_S(input_str):
             curr_char_index += 1
             return parse_S(input_str)
         else:
+            raise InvalidSymbolException(f"Error at index {curr_char_index}, parser expected one of symbols {first_C}, but encountered: {input_str[curr_char_index]}")
             return False
     except IndexError:
         raise InvalidSymbolException(f"Error at index {curr_char_index}, unexpected string end")
