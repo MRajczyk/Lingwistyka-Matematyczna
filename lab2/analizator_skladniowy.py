@@ -1,3 +1,6 @@
+# Analizator składniowy - Lingwistyka Matematyczna
+# Autor: Mikołaj Rajczyk
+
 class InvalidSymbolException(Exception):
     def __init__(self, m):
         self.message = m
@@ -31,7 +34,7 @@ def parse_S(input_str):
                     curr_char_index += 1
                     #checking if string ends with a number in production S should be sufficient to claim that the rest was OK
                     if len(input_str) == curr_char_index:
-                        raise InvalidSymbolException("String was not terminated with symbol ;, but otherwise belongs to grammar.")
+                        raise InvalidSymbolException("String was not terminated with symbol ;, but belongs to grammar.")
                     res = parse_C(input_str)
                 if input_str[curr_char_index] == '.':
                     curr_char_index += 1
@@ -42,7 +45,7 @@ def parse_S(input_str):
                         curr_char_index += 1
                         # #same as above error handling but for real numbers
                         if len(input_str) == curr_char_index:
-                            raise InvalidSymbolException("String was not terminated with symbol ;, but otherwise belongs to grammar.")
+                            raise InvalidSymbolException("String was not terminated with symbol ;, but belongs to grammar.")
                         res = parse_C(input_str)         
             res = parse_O(input_str)
             if res == False:
@@ -122,7 +125,7 @@ if len(input_string) < 1:
 
 try:
     if parse_S(input_string) == True:
-        print("Entered strings belongs to grammar")
+        print("Entered string belongs to grammar")
 except Exception as e:
     print(str(e))
 
