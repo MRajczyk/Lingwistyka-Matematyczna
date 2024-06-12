@@ -52,8 +52,12 @@ def parse_S(input_str):
                         return True
                     else:
                         return parse_S(input_str)
+                elif input_str[curr_char_index] == ' ':
+                    if len(input_str) == curr_char_index:
+                        raise InvalidSymbolException(f"Error at index {curr_char_index}, parser expected ;, but encountered: ' '")
+                    else:
+                        print(f"Parser found symbol ' ' instead of ; at index {curr_char_index}, but continues to work")
                 else:
-                    # tu mozna ogarnac poprawe jakichs bledow typu spacja ig
                     raise InvalidSymbolException(f"Error at index {curr_char_index}, parser expected one of symbols {first_C}, but encountered: {input_str[curr_char_index]}")
             curr_char_index += 1
             return parse_S(input_str)
