@@ -1,5 +1,5 @@
 # Analizator składniowy - Lingwistyka Matematyczna
-# Autor: Mikołaj Rajczyk
+# Autor: Mikołaj Rajczyk 254403
 
 class InvalidSymbolException(Exception):
     def __init__(self, m):
@@ -17,9 +17,12 @@ curr_char_index = 0
 def parse_S(input_str):
     global curr_char_index
     try:
+        # check if input character belongs to S first symbols
         if input_str[curr_char_index] in first_S:
+            # check if next symbol is (, then parse for w
             if input_str[curr_char_index] == '(':
                 curr_char_index += 1
+                # go into function W paring
                 res = parse_W(input_str)
                 if not res:
                     raise InvalidSymbolException(f"Error at index {curr_char_index}, parser expected one of symbols {first_W}, but encountered: {input_str[curr_char_index]}")
@@ -27,15 +30,18 @@ def parse_S(input_str):
                     raise InvalidSymbolException(f"Error at index {curr_char_index}, parser expected symbol ')', but encountered: {input_str[curr_char_index]}")
                 curr_char_index += 1
             else:
+                # go into function C parsing for digits
                 res = parse_C(input_str)
                 if res is False:
                     raise InvalidSymbolException(f"Error at index {curr_char_index}, parser expected one of symbols {first_C}, but encountered: {input_str[curr_char_index]}")
+                # parse all following digits
                 while res:
                     curr_char_index += 1
-                    #checking if string ends with a number in production S should be sufficient to claim that the rest was OK
+                    # if we encounter empty symbol instead of ;, string is partially-OK
                     if len(input_str) == curr_char_index:
                         raise InvalidSymbolException("String was not terminated with symbol ;, but belongs to grammar.")
                     res = parse_C(input_str)
+                # if encountered dot check for following digits in the decimal part
                 if input_str[curr_char_index] == '.':
                     curr_char_index += 1
                     res = parse_C(input_str)
@@ -43,18 +49,22 @@ def parse_S(input_str):
                         raise InvalidSymbolException(f"Error at index {curr_char_index}, parser expected one of symbols {first_C}, but encountered: {input_str[curr_char_index]}")
                     while res:
                         curr_char_index += 1
-                        # #same as above error handling but for real numbers
+                        # if string ends on empty symbol when expecting ;, it partly belongs to grammar
                         if len(input_str) == curr_char_index:
                             raise InvalidSymbolException("String was not terminated with symbol ;, but belongs to grammar.")
-                        res = parse_C(input_str)         
+                        # go into function C parsing for digits
+                        res = parse_C(input_str)
+            # check if next symbol is operation sign (function O)
             res = parse_O(input_str)
             if res == False:
+                # if last symbol is ;, end of parsing
                 if input_str[curr_char_index] == ';':
                     curr_char_index += 1
                     if len(input_str) == curr_char_index:
                         return True
                     else:
                         return parse_S(input_str)
+                # if space instead of ;, string is partly OK, continue parsing
                 elif input_str[curr_char_index] == ' ':
                     if len(input_str) == curr_char_index:
                         raise InvalidSymbolException(f"Error at index {curr_char_index}, parser expected ;, but encountered: ' '")
@@ -67,14 +77,18 @@ def parse_S(input_str):
         else:
             raise InvalidSymbolException(f"Error at index {curr_char_index}, parser expected one of symbols {first_S}, but encountered: {input_str[curr_char_index]}")
     except IndexError:
+        # catch empty symbol when it should not be one
         raise InvalidSymbolException(f"Error at index {curr_char_index}, unexpected string end")
 
 
 def parse_W(input_str):
     global curr_char_index
+    # check if next symbol belongs to W first set
     if input_str[curr_char_index] in first_W:
+        # check if next symbol is (, then parse for w
         if input_str[curr_char_index] == '(':
             curr_char_index += 1
+            # go into function w parsing
             res = parse_W(input_str)
             if not res:
                 raise InvalidSymbolException(f"Error at index {curr_char_index}, parser expected one of symbols {first_W}, but encountered: {input_str[curr_char_index]}")
@@ -82,12 +96,15 @@ def parse_W(input_str):
                 raise InvalidSymbolException(f"Error at index {curr_char_index}, parser expected symbol ')', but encountered: {input_str[curr_char_index]}")
             curr_char_index += 1
         else:
+            # go into function C parsing for digit
             res = parse_C(input_str)
             if res is False:
                 raise InvalidSymbolException(f"Error at index {curr_char_index}, parser expected one of symbols {first_C}, but encountered: {input_str[curr_char_index]}")
+            # parse all following digits
             while res:
                 curr_char_index += 1
                 res = parse_C(input_str)
+            # if encountered dot check for following digits in the decimal part
             if input_str[curr_char_index] == '.':
                 curr_char_index += 1
                 res = parse_C(input_str)
